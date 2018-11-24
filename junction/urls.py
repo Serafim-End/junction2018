@@ -15,7 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls import url, include
+
+from rest_framework_swagger.views import get_swagger_view
+
+schema_view = get_swagger_view(title='Junction K-market API')
 
 urlpatterns = [
+    url(r'^docs/', schema_view),
     path('admin/', admin.site.urls),
+    url(r'^category/', include('recipe.urls')),
 ]
