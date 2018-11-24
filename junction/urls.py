@@ -24,5 +24,5 @@ schema_view = get_swagger_view(title='Junction K-market API')
 urlpatterns = [
     url(r'^docs/', schema_view),
     path('admin/', admin.site.urls),
-    url(r'^category/', include('recipe.urls')),
+    url(r'^recipe/', include('recipe.urls')),
 ]

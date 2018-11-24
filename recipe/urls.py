@@ -1,8 +1,9 @@
 
 from django.conf.urls import url
 
-from .views import SubCategoryApiView
+from .views import RecommendRecipe
 
 urlpatterns = [
-    url(r'^sub/', SubCategoryApiView.as_view()),
+    url(r'^recommend/', RecommendRecipe.as_view()),
+
 ]

@@ -32,10 +32,15 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+
+    'ingredient',
     'recipe',
+    'diet',
     'junction',
-    'rest_framework',
+
     'rest_framework_swagger',
+    'rest_framework',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -125,3 +130,5 @@ USE_TZ = True
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 django_heroku.settings(locals())
+
+K_MARKET_APIKEY = '1667ea2c483540e89ff507f764839972'
