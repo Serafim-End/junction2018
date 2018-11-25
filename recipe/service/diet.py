@@ -41,8 +41,8 @@ def create_diet(diet_category_mapper, categories_map, recipes_map):
 
             _recipes = sorted(v, key=lambda x: (x[1], x[0]))
             approx = DIETS_CUSTOMIZATION[diet_level][meal_level]
-            approx_high = approx * 1.6
-            approx_low = approx * 0.4
+            approx_high = approx * 1.7
+            approx_low = approx * 0.3
 
             for (recipe_id, weight) in _recipes:
 
