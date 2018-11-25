@@ -33,9 +33,9 @@ def create_diet(diet_category_mapper, categories_map, recipes_map):
             if category_id in categories_map:
                 meal_level_map[meal_level] += categories_map[category_id]
 
+    meals = set()
     for meal_level, v in meal_level_map.items():
 
-        meals = set()
         _recipes = sorted(v, key=lambda x: (x[1], x[0]))
 
         custom_ingridient_new = []
@@ -43,7 +43,6 @@ def create_diet(diet_category_mapper, categories_map, recipes_map):
             approx = DIETS_CUSTOMIZATION[diet_level][meal_level]
             approx_high = approx * 1.4
             approx_low = approx * 0.6
-            necessary_kcal = approx * DAYS
 
             for (recipe_id, weight) in _recipes:
 
@@ -102,13 +101,11 @@ def create_diet(diet_category_mapper, categories_map, recipes_map):
 
                     custom_ingridient_new += custom_ingridient
                     diet_suggestions[diet_level][meal_level].append(
-                        new_recipe
+                        recipe_id
                     )
 
                     meals.add(recipe_id)
-                    # necessary_kcal -= portions * kcal_portion
-                    necessary_kcal -= kcal_portion
-                    if necessary_kcal * (1 - 0.2 / DAYS) <= 0:
+                    if len(diet_suggestions[diet_level][meal_level]) == DAYS:
                         break
 
             # diet_suggestions[diet_level]['products'] = get_products_list(
