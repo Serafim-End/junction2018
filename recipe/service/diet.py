@@ -108,9 +108,9 @@ def create_diet(diet_category_mapper, categories_map, recipes_map):
                     if len(diet_suggestions[diet_level][meal_level]) == DAYS:
                         break
 
-            # diet_suggestions[diet_level]['products'] = get_products_list(
-            #     custom_ingridient_new
-            # )
+            diet_suggestions[diet_level]['products'] = get_products_list(
+                custom_ingredient_new
+            )
 
     return diet_suggestions
 

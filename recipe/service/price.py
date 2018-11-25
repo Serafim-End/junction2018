@@ -123,7 +123,7 @@ def get_product(ean):
     # store = get_store_by_ean(ean)
     # if store is None:
     #     return None
-    print(ean)
+
     for s in STORE[:3]:
         product = get_product_for_store(s, ean)
         if product is not None:
@@ -201,7 +201,6 @@ def get_products_list(ingridients):
                 }
 
     for inc, ingridient in enumerate(ingridients):
-        print(inc)
         if 'Ean' in ingridient:
             ean = ingridient['Ean']
             add_product(products, ean)
