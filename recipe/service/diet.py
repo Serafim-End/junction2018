@@ -33,16 +33,16 @@ def create_diet(diet_category_mapper, categories_map, recipes_map):
             if category_id in categories_map:
                 meal_level_map[meal_level] += categories_map[category_id]
 
-    for meal_level, v in meal_level_map.items():
+    for diet_level in diet_suggestions.keys():
+        custom_ingredient_new = []
+
         meals = set()
+        for meal_level, v in meal_level_map.items():
 
-        _recipes = sorted(v, key=lambda x: (x[1], x[0]))
-
-        custom_ingridient_new = []
-        for diet_level in diet_suggestions.keys():
+            _recipes = sorted(v, key=lambda x: (x[1], x[0]))
             approx = DIETS_CUSTOMIZATION[diet_level][meal_level]
-            approx_high = approx * 1.4
-            approx_low = approx * 0.6
+            approx_high = approx * 1.6
+            approx_low = approx * 0.4
 
             for (recipe_id, weight) in _recipes:
 
@@ -99,7 +99,7 @@ def create_diet(diet_category_mapper, categories_map, recipes_map):
                         )
                     }
 
-                    custom_ingridient_new += custom_ingridient
+                    custom_ingredient_new += custom_ingridient
                     diet_suggestions[diet_level][meal_level].append(
                         new_recipe
                     )
