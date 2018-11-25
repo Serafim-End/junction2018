@@ -1,5 +1,6 @@
 
 from ..settings import DIETS_CUSTOMIZATION, DAYS
+from .price import get_products_list
 
 
 def default_category_map():
@@ -55,7 +56,23 @@ def create_diet(diet_category_mapper, categories_map, recipes_map):
                     continue
 
                 if approx_low <= kcal_portion <= approx_high:
-                    diet_suggestions[diet_level][meal_level].append(recipe_id)
+
+                    # custom_ingridient = []
+                    # ingridients = recipes_map[recipe_id].get('Ingredients')
+                    # ing = ingridients[0]
+                    # sub_ingridients = ing.get('SubSectionIngredients')
+                    # for sub_ing in sub_ingridients:
+                    #     for sub_sub_ing in sub_ing:
+                    #         try:
+                    #             custom_ingridient.append(sub_sub_ing)
+                    #         except:
+                    #             continue
+                    # custom_ingridient = list(custom_ingridient)
+                    # recipes_map[recipe_id]['products'] = get_products_list(custom_ingridient)
+
+                    diet_suggestions[diet_level][meal_level].append(
+                        recipes_map[recipe_id]
+                    )
 
                     meals.add(recipe_id)
                     # necessary_kcal -= portions * kcal_portion
