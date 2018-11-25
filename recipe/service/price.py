@@ -87,17 +87,30 @@ def get_stores():
 
 
 STORE = get_stores()
+STORE[1] = STORE[61]
 
 __i_type_to_ean = {}
 
 
-def get_ean_by_type(i_type):
+def get_ean_by_type(i_type, offset=0):
     if i_type not in __i_type_to_ean:
-        ean = products_search({
+        r = products_search({
             'filters': { 'ingredientType': [str(i_type)] },
-            'view': { 'limit': 1 } })[0]['ean']
+            'view': { 'limit': 1, 'offset': offset } })
+        if len(r) == 0:
+            return None
+        ean = r[0]['ean']
         __i_type_to_ean[i_type] = ean
     return __i_type_to_ean[i_type]
+
+
+def get_store_by_ean(ean):
+    hs = {'Ocp-Apim-Subscription-Key': settings.K_MARKET_APIKEY}
+    r = requests.get('https://kesko.azure-api.net/v2/products?ean=' + str(ean), headers=hs).json()
+    if len(r[0]['stores']) == 0:
+        return None
+    else:
+        return r[0]['stores'][0]['id']
 
 
 __ean_to_product = {}
@@ -107,11 +120,24 @@ def get_product(ean):
     if ean in __ean_to_product:
         return __ean_to_product[ean]
 
-    for s in STORE:
+    # store = get_store_by_ean(ean)
+    # if store is None:
+    #     return None
+    print(ean)
+    for s in STORE[:3]:
         product = get_product_for_store(s, ean)
         if product is not None:
             __ean_to_product[ean] = product
             return product
+
+    store = get_store_by_ean(ean)
+    if store is None:
+        return None
+
+    product = get_product_for_store(store, ean)
+    if product is not None:
+        __ean_to_product[ean] = product
+        return product
     return None
 
 
@@ -162,16 +188,17 @@ def get_products_list(ingridients):
     products = {}
     rem_products = {}
 
-    def add_product(products, ean):
+    def add_product(products, ean, count=1.0):
         if ean in products:
-            products[ean]['count'] += 1
+            products[ean]['count'] += count
         else:
             product = get_product(ean)
-            products[ean] = {
-                'count': 1,
-                'item_price': product['price'],
-                'name': product['name']
-            }
+            if product is not None and 'price' in product:
+                products[ean] = {
+                    'count': count,
+                    'item_price': product['price'],
+                    'name': product['name']
+                }
 
     for inc, ingridient in enumerate(ingridients):
         print(inc)
@@ -183,6 +210,14 @@ def get_products_list(ingridients):
                 continue
 
             ean = get_ean_by_type(ingridient['IngredientType'])
+            if ean is None:
+                continue
+
+            if get_product(ean) is None:
+                continue
+                # offset += 1
+                # ean = get_ean_by_type(ingridient['IngredientType'], offset=offset)
+
             if 'AmountInfo' in ingridient:
                 add_product(products, ean)
             else:
@@ -190,18 +225,30 @@ def get_products_list(ingridients):
                 if ean not in rem_products:
                     rem_products[ean] = 0.0
 
-                unit_m = normalize_units(ingridient['Unit'])
+                try:
+                    unit_m = normalize_units(ingridient['Unit'])
+                except Exception:
+                    unit_m = 1.0
+
                 try:
                     amount = normalize_amount(ingridient['Amount'])
                 except Exception:
                     amount = 1
 
                 quantity = unit_m * amount
+
                 if rem_products[ean] > quantity:
                     rem_products[ean] -= quantity
                 else:
                     product = get_product(ean)
                     p_unit_m = normalize_units(product['packageUnit'])
+                    p_size = float(product['packageSize'])
+
+                    if p_size < 0.001:
+                        count = quantity / p_unit_m
+                        add_product(products, ean, count)
+                        continue
+
                     p_quantity = p_unit_m * float(product['packageSize'])
 
                     while quantity > 0:
