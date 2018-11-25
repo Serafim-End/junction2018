@@ -132,12 +132,15 @@ def get_product(ean):
 
     store = get_store_by_ean(ean)
     if store is None:
+        __ean_to_product[ean] = None
         return None
 
     product = get_product_for_store(store, ean)
     if product is not None:
         __ean_to_product[ean] = product
         return product
+    
+    __ean_to_product[ean] = None
     return None
 
 
