@@ -86,6 +86,8 @@ def get_stores():
     return [e.get('Id') for e in data.get('results')]
 
 
+STORE = get_stores()
+
 __i_type_to_ean = {}
 
 
@@ -105,7 +107,7 @@ def get_product(ean):
     if ean in __ean_to_product:
         return __ean_to_product[ean]
 
-    for s in get_stores():
+    for s in STORE:
         product = get_product_for_store(s, ean)
         if product is not None:
             __ean_to_product[ean] = product
