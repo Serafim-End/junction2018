@@ -101,7 +101,7 @@ def create_diet(diet_category_mapper, categories_map, recipes_map):
 
                     custom_ingridient_new += custom_ingridient
                     diet_suggestions[diet_level][meal_level].append(
-                        recipe_id
+                        new_recipe
                     )
 
                     meals.add(recipe_id)
