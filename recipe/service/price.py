@@ -171,7 +171,8 @@ def get_products_list(ingridients):
                 'name': product['name']
             }
 
-    for ingridient in ingridients:
+    for inc, ingridient in enumerate(ingridients):
+        print(inc)
         if 'Ean' in ingridient:
             ean = ingridient['Ean']
             add_product(products, ean)

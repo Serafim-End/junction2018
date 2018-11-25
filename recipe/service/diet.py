@@ -19,8 +19,6 @@ def full_default_category_map(category_keys):
 
 def create_diet(diet_category_mapper, categories_map, recipes_map):
 
-    recipes_short = {}
-
     diet_suggestions = {
         k: {
             kk: [] for kk, vv in v.items()
@@ -40,6 +38,7 @@ def create_diet(diet_category_mapper, categories_map, recipes_map):
         meals = set()
         _recipes = sorted(v, key=lambda x: (x[1], x[0]))
 
+        custom_ingridient_new = []
         for diet_level in diet_suggestions.keys():
             approx = DIETS_CUSTOMIZATION[diet_level][meal_level]
             approx_high = approx * 1.4
@@ -78,21 +77,30 @@ def create_diet(diet_category_mapper, categories_map, recipes_map):
                         'name': e.get('Name'),
                         'portions': e.get('Portions').get('Amount'),
                         'preparation_time': e.get('PreparationTime').get('Description'),
-                        'category': ''.join([c.get('MainName') for c in e.get('Categories')]),
-                        'img_url': [ee.get('Normal') for ee in e.get('PictureUrls')],
+                        'category': ', '.join(
+                            [c.get('MainName') for c in e.get('Categories')]
+                        ),
+                        'img_url': [
+                            ee.get('Normal') for ee in e.get('PictureUrls')
+                        ],
                         'kcal_portion': float(kcal_portion),
                         'kj_portion': float(energy.get('KJPerPortion')),
                         'fat_portion': float(energy.get('FatPerPortion')),
-                        'protein_portion': float(energy.get('ProteinPerPortion')),
-                        'carbohydrate_portion': float(energy.get('CarbohydratePerPortion')),
+                        'protein_portion': float(
+                            energy.get('ProteinPerPortion')
+                        ),
+                        'carbohydrate_portion': float(
+                            energy.get('CarbohydratePerPortion')
+                        ),
                         'instruction': e.get('Instructions'),
                         'description': e.get('Description'),
                         'k_url': e.get('Url'),
-                        'ingredients': ', '.join([ee.get('Name') for ee in custom_ingridient])
+                        'ingredients': ', '.join(
+                            [ee.get('Name') for ee in custom_ingridient]
+                        )
                     }
 
-                    # new_recipe['products'] = get_products_list(custom_ingridient)
-
+                    custom_ingridient_new += custom_ingridient
                     diet_suggestions[diet_level][meal_level].append(
                         new_recipe
                     )
@@ -103,7 +111,13 @@ def create_diet(diet_category_mapper, categories_map, recipes_map):
                     if necessary_kcal * (1 - 0.2 / DAYS) <= 0:
                         break
 
+            # diet_suggestions[diet_level]['products'] = get_products_list(
+            #     custom_ingridient_new
+            # )
+
     return diet_suggestions
+
+
 #         energy = e.get('EnergyAmounts')
 #
 #         if not isinstance(energy, dict):

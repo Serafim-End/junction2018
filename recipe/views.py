@@ -52,6 +52,10 @@ class RecommendRecipe(APIView):
             categories_map=categories_map,
             recipes_map=recipes_map
         )
+
+        if diet:
+            diet_suggestions = diet_suggestions[diet]
+
         return Response(
             diet_suggestions,
             status=status.HTTP_200_OK
