@@ -33,8 +33,8 @@ def create_diet(diet_category_mapper, categories_map, recipes_map):
             if category_id in categories_map:
                 meal_level_map[meal_level] += categories_map[category_id]
 
-    meals = set()
     for meal_level, v in meal_level_map.items():
+        meals = set()
 
         _recipes = sorted(v, key=lambda x: (x[1], x[0]))
 
