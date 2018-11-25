@@ -86,16 +86,29 @@ def get_stores():
     return [e.get('Id') for e in data.get('results')]
 
 
+__i_type_to_ean = {}
+
+
 def get_ean_by_type(i_type):
-    return products_search({
-        'filters': { 'ingredientType': [str(i_type)] },
-        'view': { 'limit': 1 } })[0]['ean']
+    if i_type not in __i_type_to_ean:
+        ean = products_search({
+            'filters': { 'ingredientType': [str(i_type)] },
+            'view': { 'limit': 1 } })[0]['ean']
+        __i_type_to_ean[i_type] = ean
+    return __i_type_to_ean[i_type]
+
+
+__ean_to_product = {}
 
 
 def get_product(ean):
+    if ean in __ean_to_product:
+        return __ean_to_product[ean]
+
     for s in get_stores():
         product = get_product_for_store(s, ean)
         if product is not None:
+            __ean_to_product[ean] = product
             return product
     return None
 
